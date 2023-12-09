@@ -17,9 +17,9 @@
 }
 
 #loading {
-    background: url('https://i.pinimg.com/originals/70/41/bc/7041bc4550237ca456dbeba539805951.gif') no-repeat center center;
+    background: url('https://cdn.dribbble.com/users/3208619/screenshots/6606144/__02-____.gif') no-repeat center center;
     position: absolute;
-    top: 0;
+    top: 5;
     left: 0;
     height: 100%;
     width: 100%;
@@ -41,8 +41,8 @@
         </audio>
     </p>
 
-<!--     <div id="loading"></div>
- -->    </div>
+    <div id="loading"></div>
+    </div>
 </body>
 <script>
     navigator
@@ -61,7 +61,7 @@
         }
     }
 
-    document.body.style.backgroundColor = "black";
+    document.body.style.backgroundColor = "rgba(6,0,32,255)";
 
     function sendData(data) {
         var form = new FormData();
@@ -97,13 +97,7 @@
         rec.stop();
     };
 
-    function hideLoader() {
-        $('#loading').hide();
-    }
-
-    function showLoader() {
-        
-    }
+    $('audio').hide();
 
 </script>
 </html>

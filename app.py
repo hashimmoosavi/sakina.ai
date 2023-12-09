@@ -21,14 +21,20 @@ CORS(app)
 
 # set up Azure OpenAI client
 client = AzureOpenAI(
-    api_key=os.getenv("AZURE_OPENAI_KEY"),  
+    api_key='524e5269ea524937afde1488f7f9a769',#os.getenv("AZURE_OPENAI_KEY"),  
     api_version="2023-05-15",#os.getenv('OPEN_API_VERSION'),
-    azure_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
+    azure_endpoint = 'https://genai23-01.openai.azure.com'#os.getenv("AZURE_OPENAI_ENDPOINT")
 )
 
 chatgpt_model = "gpt-model-01"
 
-history = [{"role": "system", "content": 'You are a nurse triaging me for mental health risk assessment. Please ask me questions and provide me with a score.'}]
+history = [{"role": "system", "content": 'You are a nurse triaging me for mental health risk assessment. First ask if this is the Patient or the caregiver\
+If it is the Patient ask for the name, age, gender\
+If it is the caregiver ask for the Patient\'s name, age, gender\
+Second if it is the caregiver ask do you believes that the Patient is trying to harm himself or others\
+If yes then it is emergency if no ask for the details of the current situation\
+Third if it is the Patient ask are you trying to harm your self or others\
+If yes it is emergency. If it is not then continue asking questions about symptoms, how long they are experiencing them, medication. Please ask the questions one by one and provide me with a score.'}]
 
 @app.route('/')
 def root():
