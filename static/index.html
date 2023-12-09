@@ -1,0 +1,109 @@
+<!-- Source: https://github.com/duketemon/web-speech-recorder/blob/master/source/static/index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <meta charset="UTF-8">
+    <title>Web Speech Recorder</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<style>
+.content {
+  max-width: 500px;
+  margin: auto;
+}
+
+#loading {
+    background: url('https://i.pinimg.com/originals/70/41/bc/7041bc4550237ca456dbeba539805951.gif') no-repeat center center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 9999999;
+}
+</style>
+<body>
+    <div class="content">
+    <p>
+        <button class="mdc-button" id="startRecording"><span class="mdc-button__ripple"></span>
+   <span class="mdc-button__label">Start recording</span></button>
+        <button class="mdc-button" id="stopRecording" disabled><span class="mdc-button__ripple"></span>
+   <span class="mdc-button__label">Stop recording</span></button>
+    </p>
+    <p>
+        <audio controls>
+        <source id="source" src="" type="audio/mp3">
+        Your browser does not support the audio element.
+        </audio>
+    </p>
+
+<!--     <div id="loading"></div>
+ -->    </div>
+</body>
+<script>
+    navigator
+        .mediaDevices
+        .getUserMedia({audio: true})
+        .then(stream => { handlerFunction(stream) });
+
+    function handlerFunction(stream) {
+        rec = new MediaRecorder(stream);
+        rec.ondataavailable = e => {
+            audioChunks.push(e.data);
+            if (rec.state == "inactive") {
+                let blob = new Blob(audioChunks, {type: 'audio/mpeg-3'});
+                sendData(blob);
+            }
+        }
+    }
+
+    document.body.style.backgroundColor = "black";
+
+    function sendData(data) {
+        var form = new FormData();
+        form.append('file', data, 'data.mp3');
+        form.append('title', 'data.mp3');
+        //Chrome inspector shows that the post data includes a file and a title.
+        $.ajax({
+            type: 'POST',
+            url: '/whisper',
+            data: form,
+            cache: false,
+            processData: false,
+            contentType: false
+        }).done(function(data) {
+            $('audio #source').attr('src', 'data:;base64,' + data['audio']);
+            $('audio').get(0).load();
+            $('audio').get(0).play();
+        });
+    }
+
+    startRecording.onclick = e => {
+        console.log('Recording started.');
+        startRecording.disabled = true;
+        stopRecording.disabled = false;
+        audioChunks = [];
+        rec.start();
+    };
+
+    stopRecording.onclick = e => {
+        console.log("Recording  stopped.");
+        startRecording.disabled = false;
+        stopRecording.disabled = true;
+        rec.stop();
+    };
+
+    function hideLoader() {
+        $('#loading').hide();
+    }
+
+    function showLoader() {
+        
+    }
+
+</script>
+</html>
